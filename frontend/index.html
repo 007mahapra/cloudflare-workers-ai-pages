@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cloudflare Frontend</title>
+  <title>Know Mahaveer</title>
 </head>
 <body>
   <h1>Cloudflare Pages & Workers API</h1>
@@ -17,5 +17,42 @@
       document.getElementById('response').innerText = JSON.stringify(data);
     });
   </script>
+
+<h1>Ask Cloudflare AI</h1>
+  
+<!-- Text input for user prompt -->
+<form id="aiForm">
+  <label for="prompt">Enter a prompt:</label>
+  <input type="text" id="prompt" name="prompt" required />
+  <button type="submit">Submit</button>
+</form>
+
+<h2>Response:</h2>
+<p id="response"></p>
+
+<script>
+  document.getElementById('aiForm').addEventListener('submit', async (event) => {
+    event.preventDefault(); // Prevent form reload
+
+    const prompt = document.getElementById('prompt').value;
+
+    // Send the prompt to the backend API
+    const response = await fetch('https://backend-api-ai.007mahapra.workers.dev/api', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      document.getElementById('response').innerText = data.response;
+    } else {
+      document.getElementById('response').innerText = 'Error fetching response from AI';
+    }
+  });
+</script>
+
 </body>
 </html>

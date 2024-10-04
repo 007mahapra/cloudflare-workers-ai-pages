@@ -33,6 +33,37 @@ export default {
 			headers: headers,
 		  });
 		}
+
+		
+		if (request.method === 'POST') {
+			try {
+			  // Parse the request body to get the prompt
+			  const { prompt } = await request.json();
+	  
+			  // Send the prompt to the AI model for completion
+			  let aiRequest = {
+				prompt: prompt,
+			  };
+	  
+			  let aiResponse = await env.AI.run('@cf/meta/llama-3-8b-instruct', aiRequest);
+	  
+			  // Return the AI response to the frontend
+			  return new Response(
+				JSON.stringify({ response: aiResponse.completion }),
+				{
+				  headers: headers,
+				}
+			  );
+			} catch (error) {
+			  return new Response(
+				JSON.stringify({ error: 'Failed to process the AI request.' }),
+				{
+				  headers: headers,
+				  status: 500,
+				}
+			  );
+			}
+		  }
   
 		return new Response(
 		  JSON.stringify({ message: "Hello from Cloudflare Workers!" }),
@@ -41,6 +72,7 @@ export default {
 		  }
 		);
 	  }
+	  
   
 	  return new Response("Not Found", { status: 404 });
 	},
